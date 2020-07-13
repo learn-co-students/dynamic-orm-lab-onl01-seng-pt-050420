@@ -20,13 +20,15 @@ class InteractiveRecord
     DB[:conn].execute(sql, name)
   end
 
-  def self.find_by(options = {})
+  def self.find_by(attribute_hash)
     results = []
     options.each do |key, value|
       sql = "SELECT #{self.table_name}.* FROM #{self.table_name} WHERE #{key.to_s} = ?"
       results = DB[:conn].execute(sql, value)
     end
     results
+
+   
   end
 
   def self.table_name
