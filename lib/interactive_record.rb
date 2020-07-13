@@ -21,8 +21,12 @@ class InteractiveRecord
   end
 
   def self.find_by(options = {})
-    sql = "SELECT * FROM #{self.table_name} WHERE ? = ?"
-    DB[:conn].execute(sql, options.key, options.value)
+    results = []
+    options.each do |key, value|
+      sql = "SELECT #{self.table_name}.* FROM #{self.table_name} WHERE #{key.to_s} = ?"
+      results = DB[:conn].execute(sql, value)
+    end
+    results
   end
 
   def self.table_name
