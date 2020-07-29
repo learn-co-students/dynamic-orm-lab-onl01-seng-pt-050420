@@ -24,7 +24,6 @@ class InteractiveRecord
 end
 
 def table_name_for_insert
-    binding.pry
     self.class.table_name
 end
 
@@ -39,7 +38,6 @@ end
     end
 
     def save
-        binding.pry
         clas = self.class
         sql = <<-SQL
             INSERT INTO #{self.table_name_for_insert} (#{self.col_names_for_insert})
