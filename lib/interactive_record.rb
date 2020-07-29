@@ -10,21 +10,23 @@ class InteractiveRecord
     def self.column_names
         sql = "PRAGMA table_info('#{self.table_name}')"
         column_hash = DB[:conn].execute(sql)
-        info = column_hash.map do |column|
-            column["name"]
+        column_names = []
+        column_hash.map do |column|
+            column_names << column["name"]
         end
-        info.compact
+        column_names.compact
     end
-
+    
     def initialize(hash={})
-        hash.each do |k, v|
-            self.send("#{k}=", v)
-        end
+    hash.each do |k, v|
+        self.send("#{k}=", v)
     end
+end
 
-    def table_name_for_insert
-        self.class.table_name
-    end
+def table_name_for_insert
+    binding.pry
+    self.class.table_name
+end
 
     def col_names_for_insert
         self.class.column_names.delete_if{|col| col == "id"}.join(", ")
@@ -32,11 +34,12 @@ class InteractiveRecord
 
     def values_for_insert
         values_arr = []
-        self.class.column_names.each {|col_name| values_arr << "'#{self.send(col_name)}'" if !self.send(col_name).nil?}
+        self.class.column_names.each {|col_name| values_arr << "'#{self.send(col_name)}'" unless self.send(col_name).nil?}
         values_arr.join(", ")
     end
 
     def save
+        binding.pry
         clas = self.class
         sql = <<-SQL
             INSERT INTO #{self.table_name_for_insert} (#{self.col_names_for_insert})
